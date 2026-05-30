@@ -83,8 +83,10 @@ type Phase = "log" | "review";
 
 function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
   const router = useRouter();
-  const { state, setState, ready } = useAppState();
+  const { state, commit, ready } = useAppState();
   const session = SESSIONS_BY_ID[sessionId];
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   const [phase, setPhase] = useState<Phase>("log");
   const [logged, setLogged] = useState<Record<string, number[]> | null>(null);
@@ -161,8 +163,8 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
     window.scrollTo({ top: 0 });
   };
 
-  const handleCommit = () => {
-    if (!recorded) return;
+  const handleCommit = async () => {
+    if (!recorded || saving) return;
     const slotStates = { ...recorded.slotStates };
     for (const s of suggestions) {
       if (!s || decisions[s.slotId] !== "accepted") continue;
@@ -174,8 +176,16 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
         slotStates[s.slotId] = applyRegress(slot, slotStates[s.slotId]);
       }
     }
-    setState({ ...recorded, slotStates });
-    router.push("/");
+    // Persist the finished session before navigating — don't lose it to a race.
+    setSaving(true);
+    setSaveError(false);
+    try {
+      await commit({ ...recorded, slotStates });
+      router.push("/");
+    } catch {
+      setSaving(false);
+      setSaveError(true);
+    }
   };
 
   if (phase === "review") {
@@ -184,6 +194,8 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
         suggestions={suggestions}
         decisions={decisions}
         slotsById={resolveSlotsById(recorded ?? state)}
+        saving={saving}
+        saveError={saveError}
         onDecide={(slotId, decision) =>
           setDecisions((prev) => ({ ...prev, [slotId]: decision }))
         }

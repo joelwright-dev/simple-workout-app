@@ -15,12 +15,16 @@ export function SessionReview({
   suggestions,
   decisions,
   slotsById,
+  saving = false,
+  saveError = false,
   onDecide,
   onFinish,
 }: {
   suggestions: Suggestion[];
   decisions: Record<string, Decision>;
   slotsById: Record<string, Slot>;
+  saving?: boolean;
+  saveError?: boolean;
   onDecide: (slotId: string, decision: Decision) => void;
   onFinish: () => void;
 }) {
@@ -108,9 +112,16 @@ export function SessionReview({
         );
       })}
 
-      <Button onClick={onFinish} className="mt-auto w-full">
-        Done
-      </Button>
+      <div className="mt-auto">
+        {saveError && (
+          <p className="mb-2 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-medium text-red-700">
+            Couldn&apos;t save your session. Check your connection and try again.
+          </p>
+        )}
+        <Button onClick={onFinish} disabled={saving} className="w-full">
+          {saving ? "Saving…" : "Done"}
+        </Button>
+      </div>
     </div>
   );
 }

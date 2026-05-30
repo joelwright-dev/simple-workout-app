@@ -16,6 +16,12 @@ interface AppStateContextValue {
   state: AppState;
   setState: (next: AppState) => void;
   update: (fn: (prev: AppState) => AppState) => void;
+  /**
+   * Persist immediately (no debounce) and await the write. Use this for
+   * important, must-not-lose mutations like finishing a session, so the data is
+   * safely stored before we navigate away. Throws if the save fails.
+   */
+  commit: (next: AppState) => Promise<void>;
   ready: boolean;
 }
 
@@ -107,8 +113,22 @@ export function AppStateProvider({
     [scheduleSave],
   );
 
+  const commit = useCallback(
+    async (next: AppState) => {
+      setStateRaw(next);
+      // Cancel any pending debounced save and write through synchronously so
+      // the data is durable before the caller navigates away.
+      if (saveTimer.current) {
+        clearTimeout(saveTimer.current);
+        saveTimer.current = null;
+      }
+      if (userId) await persistState(next);
+    },
+    [userId],
+  );
+
   return (
-    <AppStateContext.Provider value={{ state, setState, update, ready }}>
+    <AppStateContext.Provider value={{ state, setState, update, commit, ready }}>
       {children}
     </AppStateContext.Provider>
   );
