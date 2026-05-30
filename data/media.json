@@ -1,0 +1,179 @@
+{
+  "archer inverted row": {
+    "name": "Inverted Row",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Inverted_Row/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Inverted_Row/1.jpg"
+  },
+  "archer push up": {
+    "fallback": "https://www.youtube.com/results?search_query=archer%20push%20up%20form"
+  },
+  "assisted bodyweight squat": {
+    "name": "Bodyweight Squat",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Squat/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Squat/1.jpg"
+  },
+  "bodyweight reverse lunge": {
+    "name": "Bodyweight Walking Lunge",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Walking_Lunge/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Walking_Lunge/1.jpg"
+  },
+  "bodyweight squat": {
+    "name": "Bodyweight Squat",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Squat/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Bodyweight_Squat/1.jpg"
+  },
+  "bulgarian split squat": {
+    "name": "Split Squats",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squats/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squats/1.jpg"
+  },
+  "copenhagen plank": {
+    "name": "Plank",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/1.jpg"
+  },
+  "decline push up": {
+    "name": "Decline Push-Up",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Push-Up/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Decline_Push-Up/1.jpg"
+  },
+  "deficit bulgarian split squat": {
+    "name": "Split Squats",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squats/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squats/1.jpg"
+  },
+  "diamond push up": {
+    "fallback": "https://www.youtube.com/results?search_query=diamond%20push%20up%20form"
+  },
+  "elevated glute bridge": {
+    "name": "Barbell Glute Bridge",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Glute_Bridge/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Glute_Bridge/1.jpg"
+  },
+  "elevated pike push up": {
+    "name": "Push-Ups With Feet Elevated",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push-Ups_With_Feet_Elevated/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push-Ups_With_Feet_Elevated/1.jpg"
+  },
+  "feet elevated inverted row": {
+    "name": "Inverted Row",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Inverted_Row/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Inverted_Row/1.jpg"
+  },
+  "glute bridge": {
+    "name": "Barbell Glute Bridge",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Glute_Bridge/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Barbell_Glute_Bridge/1.jpg"
+  },
+  "hollow body hold": {
+    "fallback": "https://www.youtube.com/results?search_query=hollow%20body%20hold%20form"
+  },
+  "hollow rock": {
+    "fallback": "https://www.youtube.com/results?search_query=hollow%20rock%20form"
+  },
+  "incline pike push up": {
+    "name": "Incline Push-Up",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Push-Up/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Push-Up/1.jpg"
+  },
+  "incline push up": {
+    "name": "Incline Push-Up",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Push-Up/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Incline_Push-Up/1.jpg"
+  },
+  "inverted row": {
+    "name": "Inverted Row",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Inverted_Row/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Inverted_Row/1.jpg"
+  },
+  "kneeling push up": {
+    "fallback": "https://www.youtube.com/results?search_query=kneeling%20push%20up%20form"
+  },
+  "long lever plank": {
+    "fallback": "https://www.youtube.com/results?search_query=long%20lever%20plank%20form"
+  },
+  "nordic hamstring curl": {
+    "name": "Seated Band Hamstring Curl",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Band_Hamstring_Curl/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Seated_Band_Hamstring_Curl/1.jpg"
+  },
+  "one arm inverted row": {
+    "name": "One-Arm Dumbbell Row",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Dumbbell_Row/1.jpg"
+  },
+  "one arm push up": {
+    "name": "One-Arm Kettlebell Push Press",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Kettlebell_Push_Press/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/One-Arm_Kettlebell_Push_Press/1.jpg"
+  },
+  "pause squat": {
+    "fallback": "https://www.youtube.com/results?search_query=pause%20squat%20form"
+  },
+  "pike push up": {
+    "fallback": "https://www.youtube.com/results?search_query=pike%20push%20up%20form"
+  },
+  "pistol squat": {
+    "name": "Kettlebell Pistol Squat",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_Pistol_Squat/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Kettlebell_Pistol_Squat/1.jpg"
+  },
+  "plank": {
+    "name": "Plank",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/1.jpg"
+  },
+  "push up": {
+    "name": "Clock Push-Up",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Clock_Push-Up/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Clock_Push-Up/1.jpg"
+  },
+  "rkc plank": {
+    "name": "Plank",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Plank/1.jpg"
+  },
+  "shrimp squat": {
+    "fallback": "https://www.youtube.com/results?search_query=shrimp%20squat%20form"
+  },
+  "side plank": {
+    "name": "Push Up to Side Plank",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push_Up_to_Side_Plank/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push_Up_to_Side_Plank/1.jpg"
+  },
+  "side plank rotation": {
+    "name": "Push Up to Side Plank",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push_Up_to_Side_Plank/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Push_Up_to_Side_Plank/1.jpg"
+  },
+  "single leg glute bridge": {
+    "name": "Single Leg Glute Bridge",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single_Leg_Glute_Bridge/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Single_Leg_Glute_Bridge/1.jpg"
+  },
+  "skater squat": {
+    "fallback": "https://www.youtube.com/results?search_query=skater%20squat%20form"
+  },
+  "split squat": {
+    "name": "Split Squats",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squats/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Split_Squats/1.jpg"
+  },
+  "tempo squat": {
+    "fallback": "https://www.youtube.com/results?search_query=tempo%20squat%20form"
+  },
+  "towel door row": {
+    "fallback": "https://www.youtube.com/results?search_query=towel%20door%20row%20form"
+  },
+  "wall handstand push up": {
+    "name": "Handstand Push-Ups",
+    "start": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Handstand_Push-Ups/0.jpg",
+    "finish": "https://cdn.jsdelivr.net/gh/yuhonas/free-exercise-db@main/exercises/Handstand_Push-Ups/1.jpg"
+  },
+  "wall handstand push up negative": {
+    "fallback": "https://www.youtube.com/results?search_query=wall%20handstand%20push%20up%20negative%20form"
+  },
+  "wall push up": {
+    "fallback": "https://www.youtube.com/results?search_query=wall%20push%20up%20form"
+  }
+}

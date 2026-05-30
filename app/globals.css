@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+html,
+body {
+  /* Avoid pull-to-refresh fighting the in-app scrolling on phones. */
+  overscroll-behavior-y: contain;
+}
+
+body {
+  @apply bg-ground-50 text-ground-900;
+}
+
+/* Respect the iOS safe-area for the sticky bottom bar. */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+}
+
+/* Prevent iOS from zooming when focusing number inputs. */
+input,
+button {
+  font-size: 16px;
+}
