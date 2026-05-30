@@ -6,19 +6,16 @@ import { useRouter } from "next/navigation";
 import { useAppState } from "@/components/AppStateProvider";
 import { SlotCard } from "@/components/SlotCard";
 import { SessionReview, type Decision } from "@/components/SessionReview";
-import {
-  RECOVERY_ITEMS,
-  SESSIONS_BY_ID,
-  SLOTS_BY_ID,
-} from "@/data/program";
+import { ButtonLink } from "@/components/ui/Button";
+import { RECOVERY_ITEMS, SESSIONS_BY_ID, SLOTS_BY_ID } from "@/data/program";
 import {
   applyAdvance,
   applyRegress,
   evaluateSlot,
   recordSession,
+  slotLoggedHistory,
   type Suggestion,
 } from "@/lib/engine";
-import { slotLoggedHistory } from "@/lib/engine";
 import type { AppState, LoggedSlot } from "@/lib/types";
 
 export default function SessionPage({
@@ -32,18 +29,15 @@ export default function SessionPage({
   if (!session) {
     return (
       <main className="flex flex-1 flex-col items-center justify-center gap-4 p-6">
-        <p className="text-ground-600">Unknown session.</p>
-        <Link href="/" className="font-semibold text-clay-600">
+        <p className="text-ink-muted">Unknown session.</p>
+        <ButtonLink href="/" variant="soft">
           Back home
-        </Link>
+        </ButtonLink>
       </main>
     );
   }
 
-  if (session.id === "RECOVERY") {
-    return <RecoverySession />;
-  }
-
+  if (session.id === "RECOVERY") return <RecoverySession />;
   return <StrengthSession sessionId={session.id} />;
 }
 
@@ -51,33 +45,31 @@ function RecoverySession() {
   return (
     <main className="flex flex-1 flex-col gap-4 px-4 py-6">
       <header className="flex items-center justify-between">
-        <h1 className="text-2xl font-extrabold text-ground-900">
-          Recovery / mobility
-        </h1>
-        <Link href="/" className="text-sm font-semibold text-ground-500">
+        <h1 className="text-2xl font-extrabold text-ink">Recovery</h1>
+        <Link
+          href="/"
+          className="rounded-full px-3 py-1.5 text-sm font-semibold text-ink-muted active:bg-line/60"
+        >
           Done
         </Link>
       </header>
-      <p className="text-sm text-ground-500">
+      <p className="px-1 text-sm text-ink-muted">
         Easy, un-tracked work to keep things moving on a rest day.
       </p>
       <ul className="flex flex-col gap-3">
         {RECOVERY_ITEMS.map((item) => (
           <li
             key={item.name}
-            className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ground-100"
+            className="rounded-4xl bg-surface p-5 shadow-soft ring-1 ring-line/70"
           >
-            <p className="font-bold text-ground-900">{item.name}</p>
-            <p className="mt-0.5 text-sm text-ground-600">{item.cue}</p>
+            <p className="font-bold text-ink">{item.name}</p>
+            <p className="mt-0.5 text-sm text-ink-muted">{item.cue}</p>
           </li>
         ))}
       </ul>
-      <Link
-        href="/"
-        className="mt-2 rounded-xl bg-ground-700 px-4 py-4 text-center text-lg font-bold text-white active:scale-[0.99]"
-      >
+      <ButtonLink href="/" className="mt-2 w-full">
         Finish
-      </Link>
+      </ButtonLink>
     </main>
   );
 }
@@ -90,35 +82,32 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
   const session = SESSIONS_BY_ID[sessionId];
 
   const [phase, setPhase] = useState<Phase>("log");
-  // Per-slot logged set values. Initialised lazily from current state.
   const [logged, setLogged] = useState<Record<string, number[]> | null>(null);
   const [decisions, setDecisions] = useState<Record<string, Decision>>({});
   const [recorded, setRecorded] = useState<AppState | null>(null);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
-  // Seed the steppers once state is ready: default to last time's numbers, or
-  // the bottom of the range on a fresh rung.
+  // Seed steppers: default to last time's numbers, or the bottom of the range.
   const initialLogged = useMemo(() => {
     if (!ready) return null;
     const out: Record<string, number[]> = {};
     for (const slotId of session.slotIds) {
       const slot = SLOTS_BY_ID[slotId];
-      const st = state.slotStates[slotId];
-      const fallback = slot.range[0];
-      const last = st.lastSets;
+      const last = state.slotStates[slotId].lastSets;
       out[slotId] = Array.from({ length: slot.sets }, (_, i) =>
-        last && typeof last[i] === "number" ? last[i] : fallback,
+        last && typeof last[i] === "number" ? last[i] : slot.range[0],
       );
     }
     return out;
-  }, [ready, session.slotIds, state.slotStates]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, sessionId]);
 
   const values = logged ?? initialLogged;
 
   if (!ready || !values) {
     return (
-      <main className="flex flex-1 items-center justify-center p-6">
-        <p className="text-ground-400">Loading…</p>
+      <main className="flex flex-1 items-center justify-center">
+        <span className="h-10 w-10 animate-pulse rounded-2xl bg-ink" />
       </main>
     );
   }
@@ -139,15 +128,20 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
       sets: values[slotId],
     }));
 
-    const dateISO = new Date().toISOString();
-    const nextState = recordSession(state, sessionId, loggedSlots, dateISO);
+    const nextState = recordSession(
+      state,
+      sessionId,
+      loggedSlots,
+      new Date().toISOString(),
+    );
 
-    // Evaluate each slot against the history that now includes this session.
-    const suggs: Suggestion[] = session.slotIds.map((slotId) => {
-      const slot = SLOTS_BY_ID[slotId];
-      const history = slotLoggedHistory(nextState.logs, slotId);
-      return evaluateSlot(slot, nextState.slotStates[slotId], history);
-    });
+    const suggs: Suggestion[] = session.slotIds.map((slotId) =>
+      evaluateSlot(
+        SLOTS_BY_ID[slotId],
+        nextState.slotStates[slotId],
+        slotLoggedHistory(nextState.logs, slotId),
+      ),
+    );
 
     setRecorded(nextState);
     setSuggestions(suggs);
@@ -155,14 +149,9 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
     window.scrollTo({ top: 0 });
   };
 
-  const handleDecide = (slotId: string, decision: Decision) => {
-    setDecisions((prev) => ({ ...prev, [slotId]: decision }));
-  };
-
   const handleCommit = () => {
     if (!recorded) return;
-    let finalState = recorded;
-    const slotStates = { ...finalState.slotStates };
+    const slotStates = { ...recorded.slotStates };
     for (const s of suggestions) {
       if (!s || decisions[s.slotId] !== "accepted") continue;
       const slot = SLOTS_BY_ID[s.slotId];
@@ -172,8 +161,7 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
         slotStates[s.slotId] = applyRegress(slot, slotStates[s.slotId]);
       }
     }
-    finalState = { ...finalState, slotStates };
-    setState(finalState);
+    setState({ ...recorded, slotStates });
     router.push("/");
   };
 
@@ -182,7 +170,9 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
       <SessionReview
         suggestions={suggestions}
         decisions={decisions}
-        onDecide={handleDecide}
+        onDecide={(slotId, decision) =>
+          setDecisions((prev) => ({ ...prev, [slotId]: decision }))
+        }
         onFinish={handleCommit}
       />
     );
@@ -192,14 +182,15 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
     <main className="flex flex-1 flex-col px-4 py-6">
       <header className="mb-4 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-extrabold text-ground-900">
-            {session.name}
-          </h1>
-          <p className="text-sm text-ground-500">
+          <h1 className="text-2xl font-extrabold text-ink">{session.name}</h1>
+          <p className="text-sm text-ink-muted">
             {session.slotIds.length} movements · 3 sets each
           </p>
         </div>
-        <Link href="/" className="text-sm font-semibold text-ground-500">
+        <Link
+          href="/"
+          className="rounded-full px-3 py-1.5 text-sm font-semibold text-ink-muted active:bg-line/60"
+        >
           Cancel
         </Link>
       </header>
@@ -221,11 +212,11 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
         })}
       </div>
 
-      <div className="sticky bottom-0 -mx-4 mt-4 bg-gradient-to-t from-ground-50 via-ground-50 to-transparent px-4 pb-safe pt-3">
+      <div className="sticky bottom-0 -mx-4 mt-4 bg-gradient-to-t from-paper via-paper to-transparent px-4 pb-safe pt-4">
         <button
           type="button"
           onClick={handleFinish}
-          className="w-full rounded-xl bg-clay-500 px-4 py-4 text-lg font-bold text-white shadow-lg active:scale-[0.99] active:bg-clay-600"
+          className="w-full rounded-2xl bg-ink px-5 py-4 text-lg font-bold text-paper shadow-lift transition active:scale-[0.99] active:bg-ink-soft"
         >
           Finish session
         </button>

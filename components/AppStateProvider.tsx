@@ -1,43 +1,111 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import type { AppState } from "@/lib/types";
-import { getState, initialState, saveState } from "@/lib/storage";
+import { initialState, readLegacyLocalState, clearLegacyLocalState } from "@/lib/storage";
+import { loadState, persistState } from "@/lib/actions";
 
 interface AppStateContextValue {
   state: AppState;
-  /** Replace state and persist. */
   setState: (next: AppState) => void;
-  /** Mutate via an updater and persist. */
   update: (fn: (prev: AppState) => AppState) => void;
-  /** True once we've hydrated from localStorage (avoids SSR mismatch). */
   ready: boolean;
 }
 
 const AppStateContext = createContext<AppStateContextValue | null>(null);
 
-export function AppStateProvider({ children }: { children: React.ReactNode }) {
+const SAVE_DEBOUNCE_MS = 700;
+
+export function AppStateProvider({
+  userId,
+  children,
+}: {
+  userId: string | null;
+  children: React.ReactNode;
+}) {
   const [state, setStateRaw] = useState<AppState>(initialState);
   const [ready, setReady] = useState(false);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Hydrate from storage on the client only.
+  // Debounced server persistence.
+  const scheduleSave = useCallback((next: AppState) => {
+    if (!userId) return;
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(() => {
+      persistState(next).catch(() => {
+        /* best-effort; will retry on next change */
+      });
+    }, SAVE_DEBOUNCE_MS);
+  }, [userId]);
+
+  // Initial load from the server (authenticated routes only).
   useEffect(() => {
-    setStateRaw(getState());
-    setReady(true);
-  }, []);
+    if (!userId) {
+      setReady(true);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        let loaded = await loadState();
+        // One-time migration of v1 on-device data into a fresh account.
+        if (loaded.logs.length === 0) {
+          const legacy = readLegacyLocalState();
+          if (legacy && legacy.logs.length > 0) {
+            loaded = legacy;
+            await persistState(loaded);
+            clearLegacyLocalState();
+          }
+        }
+        if (!cancelled) setStateRaw(loaded);
+      } catch {
+        /* leave seeded initialState */
+      } finally {
+        if (!cancelled) setReady(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [userId]);
 
-  const setState = (next: AppState) => {
-    setStateRaw(next);
-    saveState(next);
-  };
+  // Flush a pending save when the tab is hidden/closed.
+  useEffect(() => {
+    const flush = () => {
+      if (saveTimer.current && userId) {
+        clearTimeout(saveTimer.current);
+        persistState(state).catch(() => {});
+      }
+    };
+    document.addEventListener("visibilitychange", flush);
+    return () => document.removeEventListener("visibilitychange", flush);
+  }, [state, userId]);
 
-  const update = (fn: (prev: AppState) => AppState) => {
-    setStateRaw((prev) => {
-      const next = fn(prev);
-      saveState(next);
-      return next;
-    });
-  };
+  const setState = useCallback(
+    (next: AppState) => {
+      setStateRaw(next);
+      scheduleSave(next);
+    },
+    [scheduleSave],
+  );
+
+  const update = useCallback(
+    (fn: (prev: AppState) => AppState) => {
+      setStateRaw((prev) => {
+        const next = fn(prev);
+        scheduleSave(next);
+        return next;
+      });
+    },
+    [scheduleSave],
+  );
 
   return (
     <AppStateContext.Provider value={{ state, setState, update, ready }}>

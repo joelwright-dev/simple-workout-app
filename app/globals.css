@@ -2,27 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  color-scheme: light dark;
-}
-
 html,
 body {
-  /* Avoid pull-to-refresh fighting the in-app scrolling on phones. */
+  /* Avoid pull-to-refresh fighting in-app scrolling on phones. */
   overscroll-behavior-y: contain;
 }
 
 body {
-  @apply bg-ground-50 text-ground-900;
+  @apply bg-paper text-ink;
 }
 
-/* Respect the iOS safe-area for the sticky bottom bar. */
+/* Respect the iOS safe-area for sticky bottom bars. */
 .pb-safe {
   padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
 }
 
-/* Prevent iOS from zooming when focusing number inputs. */
+/* Prevent iOS zoom when focusing inputs. */
 input,
-button {
+textarea,
+select {
   font-size: 16px;
 }

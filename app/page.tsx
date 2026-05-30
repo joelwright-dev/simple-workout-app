@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useAppState } from "@/components/AppStateProvider";
+import { ButtonLink } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
 import { SESSIONS_BY_ID, SLOTS_BY_ID } from "@/data/program";
 import { currentRotationSessionId } from "@/lib/engine";
 import { rangeLabel, rungName, rungProgress } from "@/lib/format";
@@ -9,53 +11,67 @@ import { rangeLabel, rungName, rungProgress } from "@/lib/format";
 export default function HomePage() {
   const { state, ready } = useAppState();
 
-  if (!ready) {
-    return <LoadingShell />;
-  }
+  if (!ready) return <Splash />;
 
   const dueId = currentRotationSessionId(state.rotationIndex);
   const due = SESSIONS_BY_ID[dueId];
+  const nextId = dueId === "A" ? "B" : "A";
 
   return (
     <main className="flex flex-1 flex-col gap-5 px-4 py-6">
-      <header className="flex items-baseline justify-between">
-        <h1 className="text-3xl font-extrabold tracking-tight text-ground-900">
-          Groundwork
-        </h1>
-        <nav className="flex gap-3 text-sm font-semibold text-ground-500">
-          <Link href="/history" className="active:text-clay-600">
+      <header className="flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-ink text-sm font-black text-paper">
+            G
+          </span>
+          <span className="text-lg font-extrabold tracking-tight text-ink">
+            Groundwork
+          </span>
+        </div>
+        <nav className="flex gap-1 text-sm font-semibold text-ink-muted">
+          <Link href="/history" className="rounded-full px-3 py-1.5 active:bg-line/60">
             History
           </Link>
-          <Link href="/settings" className="active:text-clay-600">
+          <Link href="/settings" className="rounded-full px-3 py-1.5 active:bg-line/60">
             Settings
           </Link>
         </nav>
       </header>
 
-      <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-ground-100">
-        <p className="text-sm font-semibold uppercase tracking-wide text-clay-600">
-          Today
+      <Card className="p-6">
+        <div className="flex items-center justify-between">
+          <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-wide text-accent-ink">
+            Up next
+          </span>
+          <span className="text-xs font-semibold text-ink-faint">
+            then Session {nextId}
+          </span>
+        </div>
+        <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-ink">
+          {due.name}
+        </h1>
+        <p className="mt-1 text-sm text-ink-muted">
+          {due.slotIds.length} movements · 3 sets each
         </p>
-        <h2 className="mt-1 text-2xl font-bold text-ground-900">{due.name}</h2>
 
-        <ul className="mt-4 flex flex-col divide-y divide-ground-100">
+        <ul className="mt-5 flex flex-col gap-1">
           {due.slotIds.map((slotId) => {
             const slot = SLOTS_BY_ID[slotId];
             const st = state.slotStates[slotId];
             return (
               <li
                 key={slotId}
-                className="flex items-center justify-between gap-3 py-2.5"
+                className="flex items-center justify-between gap-3 rounded-2xl px-1 py-2"
               >
                 <div className="min-w-0">
-                  <p className="truncate font-semibold text-ground-900">
+                  <p className="truncate font-semibold text-ink">
                     {rungName(slot, st.rungIndex)}
                   </p>
-                  <p className="truncate text-xs text-ground-500">
+                  <p className="truncate text-xs text-ink-muted">
                     {slot.pattern} · {rangeLabel(slot)}
                   </p>
                 </div>
-                <span className="shrink-0 rounded-full bg-ground-100 px-2.5 py-1 text-xs font-bold text-ground-600">
+                <span className="shrink-0 rounded-full bg-paper px-2.5 py-1 text-xs font-bold text-ink-muted ring-1 ring-line">
                   {rungProgress(slot, st.rungIndex)}
                 </span>
               </li>
@@ -63,34 +79,29 @@ export default function HomePage() {
           })}
         </ul>
 
-        <Link
-          href={`/session/${dueId}`}
-          className="mt-5 flex w-full items-center justify-center rounded-xl bg-clay-500 px-4 py-4 text-lg font-bold text-white shadow active:scale-[0.99] active:bg-clay-600"
-        >
+        <ButtonLink href={`/session/${dueId}`} className="mt-5 w-full">
           Start {due.name}
-        </Link>
-      </section>
+        </ButtonLink>
+      </Card>
 
-      <Link
-        href="/session/RECOVERY"
-        className="flex items-center justify-center rounded-xl border border-ground-200 bg-ground-50 px-4 py-3.5 font-semibold text-ground-700 active:bg-ground-100"
-      >
-        Recovery / mobility session
-      </Link>
+      <ButtonLink href="/session/RECOVERY" variant="soft" className="w-full">
+        Recovery / mobility
+      </ButtonLink>
 
-      <p className="mt-auto px-2 text-center text-xs leading-relaxed text-ground-400">
-        Run A and B about twice each per week, with a rest day between. The app
-        serves the next session whenever you open it on a training day — miss a
-        day and nothing desyncs.
+      <p className="mt-auto px-4 text-center text-xs leading-relaxed text-ink-faint">
+        A and B alternate automatically — aim for each ~2× a week with a rest day
+        between. Miss a day and nothing desyncs.
       </p>
     </main>
   );
 }
 
-function LoadingShell() {
+function Splash() {
   return (
-    <main className="flex flex-1 items-center justify-center px-4 py-6">
-      <p className="text-ground-400">Loading…</p>
+    <main className="flex flex-1 items-center justify-center">
+      <span className="flex h-12 w-12 animate-pulse items-center justify-center rounded-2xl bg-ink text-xl font-black text-paper">
+        G
+      </span>
     </main>
   );
 }

@@ -2,12 +2,13 @@
 
 import type { Suggestion } from "@/lib/engine";
 import { SLOTS_BY_ID } from "@/data/program";
+import { Button } from "@/components/ui/Button";
 
 export type Decision = "accepted" | "declined";
 
 /**
  * End-of-session review. Renders advance/regress prompts as accept/decline
- * cards, and top-of-ladder notes. Advancing/regressing always requires an
+ * cards and top-of-ladder notes. Advancing/regressing always requires an
  * explicit tap — "clean form" is the user's call.
  */
 export function SessionReview({
@@ -31,13 +32,14 @@ export function SessionReview({
   );
 
   return (
-    <div className="flex flex-1 flex-col gap-4 px-4 py-6">
-      <header>
-        <h1 className="text-2xl font-extrabold text-ground-900">Nice work.</h1>
-        <p className="mt-1 text-ground-600">
+    <div className="flex flex-1 flex-col gap-4 px-4 py-8">
+      <header className="px-1">
+        <span className="text-4xl">🎉</span>
+        <h1 className="mt-2 text-2xl font-extrabold text-ink">Session logged.</h1>
+        <p className="mt-1 text-ink-muted">
           {actionable.length > 0
-            ? "A couple of slots are ready for a change — your call."
-            : "Session logged. Keep pushing those reps."}
+            ? "A few slots are ready for a change — your call."
+            : "Nice work. Keep chasing those reps."}
         </p>
       </header>
 
@@ -48,52 +50,41 @@ export function SessionReview({
         return (
           <div
             key={s.slotId}
-            className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-ground-100"
+            className="rounded-4xl bg-surface p-5 shadow-soft ring-1 ring-line/70"
           >
-            <p className="text-xs font-semibold uppercase tracking-wide text-clay-600">
+            <p className="text-xs font-bold uppercase tracking-wide text-accent-ink">
               {slot.pattern}
             </p>
-            <p className="mt-1 font-semibold text-ground-900">
+            <p className="mt-1.5 text-lg font-bold text-ink">
               {isAdvance ? (
                 <>
-                  Ready to level up to <strong>{s.toName}</strong>?
+                  Level up to <span className="text-accent-ink">{s.toName}</span>?
                 </>
               ) : (
                 <>
-                  {s.fromName} feeling tough — drop back to{" "}
-                  <strong>{s.toName}</strong>?
+                  Drop back to <span className="text-accent-ink">{s.toName}</span>?
                 </>
               )}
             </p>
-            <p className="mt-1 text-sm text-ground-500">
+            <p className="mt-1 text-sm text-ink-muted">
               {isAdvance
                 ? "Only if your form stayed clean at the top of the range."
-                : "No shame in it — strength comes back faster the second time."}
+                : `${s.fromName} felt tough two sessions running — no shame in it.`}
             </p>
 
-            <div className="mt-3 grid grid-cols-2 gap-2">
-              <button
-                type="button"
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              <Button
+                variant={decision === "accepted" ? "accent" : "soft"}
                 onClick={() => onDecide(s.slotId, "accepted")}
-                className={`rounded-xl px-4 py-3 font-bold active:scale-[0.99] ${
-                  decision === "accepted"
-                    ? "bg-clay-500 text-white"
-                    : "bg-ground-100 text-ground-700"
-                }`}
               >
                 {isAdvance ? "Level up" : "Drop back"}
-              </button>
-              <button
-                type="button"
+              </Button>
+              <Button
+                variant={decision === "declined" ? "primary" : "soft"}
                 onClick={() => onDecide(s.slotId, "declined")}
-                className={`rounded-xl px-4 py-3 font-bold active:scale-[0.99] ${
-                  decision === "declined"
-                    ? "bg-ground-700 text-white"
-                    : "bg-ground-100 text-ground-700"
-                }`}
               >
                 {isAdvance ? "Not yet" : "Stay here"}
-              </button>
+              </Button>
             </div>
           </div>
         );
@@ -104,26 +95,20 @@ export function SessionReview({
         return (
           <div
             key={s.slotId}
-            className="rounded-2xl bg-ground-100 p-4 text-ground-700"
+            className="rounded-4xl bg-accent-soft p-5 text-accent-ink"
           >
-            <p className="font-semibold">
-              {slot.pattern}: top of the ladder 🏔️
-            </p>
+            <p className="font-bold">{slot.pattern}: top of the ladder 🏔️</p>
             <p className="mt-1 text-sm">
               You&apos;ve maxed out <strong>{s.name}</strong>. No harder rung —
-              keep growing by adding reps or slowing the tempo.
+              grow by adding reps or slowing the tempo.
             </p>
           </div>
         );
       })}
 
-      <button
-        type="button"
-        onClick={onFinish}
-        className="mt-auto rounded-xl bg-clay-500 px-4 py-4 text-lg font-bold text-white shadow active:scale-[0.99] active:bg-clay-600"
-      >
+      <Button onClick={onFinish} className="mt-auto w-full">
         Done
-      </button>
+      </Button>
     </div>
   );
 }

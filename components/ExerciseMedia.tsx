@@ -18,7 +18,7 @@ export function ExerciseMedia({ searchTerm }: { searchTerm: string }) {
         href={media.fallback}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex aspect-[4/3] w-full items-center justify-center rounded-xl bg-ground-100 text-ground-600"
+        className="flex aspect-[4/3] w-full items-center justify-center rounded-3xl bg-paper text-ink-muted ring-1 ring-line"
       >
         <span className="flex flex-col items-center gap-1">
           <span className="text-3xl">▶</span>
@@ -35,7 +35,7 @@ export function ExerciseMedia({ searchTerm }: { searchTerm: string }) {
     <button
       type="button"
       onClick={() => hasFinish && setShowFinish((v) => !v)}
-      className="relative block aspect-[4/3] w-full overflow-hidden rounded-xl bg-ground-100"
+      className="relative block aspect-[4/3] w-full overflow-hidden rounded-3xl bg-paper"
       aria-label={hasFinish ? "Toggle start / finish frame" : "Exercise image"}
     >
       {/* free-exercise-db images are remote stills; plain <img> keeps the SW
@@ -48,7 +48,7 @@ export function ExerciseMedia({ searchTerm }: { searchTerm: string }) {
         loading="lazy"
       />
       {hasFinish && (
-        <span className="absolute bottom-2 right-2 rounded-full bg-ground-900/70 px-3 py-1 text-xs font-semibold text-white">
+        <span className="absolute bottom-2 right-2 rounded-full bg-ink/75 px-3 py-1 text-xs font-semibold text-paper">
           {showFinish ? "finish ⇄" : "start ⇄"}
         </span>
       )}
