@@ -41,10 +41,10 @@ describe("session customization", () => {
 
   it("reorders slots within a session and clamps at the ends", () => {
     let s = initialState();
-    s = moveSlotInSession(s, "A", 0, 1); // squat <-> hpush
+    s = moveSlotInSession(s, "A", 0, 1); // bwsquat <-> pushup
     expect(resolveSessionSlotIds(s, "A").slice(0, 2)).toEqual([
-      "hpush",
-      "squat",
+      "pushup",
+      "bwsquat",
     ]);
     const snapshot = resolveSessionSlotIds(s, "A");
     s = moveSlotInSession(s, "A", 0, -1); // can't move first up

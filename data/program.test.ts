@@ -64,6 +64,8 @@ describe("Session A end-to-end (real program)", () => {
 
     // Hit the top of the range on squat (12,12,12); cruise everything else.
     const entered: Record<string, number[]> = {
+      bwsquat: [8, 8, 8],
+      pushup: [8, 8, 8],
       squat: [12, 12, 12],
       hpush: [8, 8, 8],
       hpull: [8, 8, 8],
@@ -107,6 +109,8 @@ describe("Session A end-to-end (real program)", () => {
       state,
       "A",
       {
+        bwsquat: [8, 8, 8],
+        pushup: [8, 8, 8],
         squat: [8, 8, 8],
         hpush: [8, 8, 8],
         hpull: [12, 12, 12],
