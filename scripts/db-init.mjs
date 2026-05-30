@@ -8,17 +8,20 @@ import pg from "pg";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Minimal .env.local loader (no dependency) so `npm run db:init` just works.
-try {
-  const env = readFileSync(resolve(__dirname, "../.env.local"), "utf8");
-  for (const line of env.split("\n")) {
-    const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
-    if (m && !process.env[m[1]]) {
-      process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+// Minimal env-file loader (no dependency) so `npm run db:init` just works.
+// Checks .env.local first, then .env.
+for (const file of [".env.local", ".env"]) {
+  try {
+    const env = readFileSync(resolve(__dirname, "..", file), "utf8");
+    for (const line of env.split("\n")) {
+      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)\s*$/);
+      if (m && !process.env[m[1]]) {
+        process.env[m[1]] = m[2].replace(/^["']|["']$/g, "");
+      }
     }
+  } catch {
+    /* file not present — try the next one / shell environment */
   }
-} catch {
-  /* no .env.local — rely on the shell environment */
 }
 
 const connectionString = process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
