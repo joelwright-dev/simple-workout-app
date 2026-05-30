@@ -13,6 +13,8 @@ describe("session customization", () => {
   it("returns default session contents when not overridden", () => {
     const s = initialState();
     expect(resolveSessionSlotIds(s, "A")).toEqual([
+      "bwsquat",
+      "pushup",
       "squat",
       "hpush",
       "hpull",

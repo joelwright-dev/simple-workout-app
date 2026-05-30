@@ -340,6 +340,76 @@ export const SLOTS: Slot[] = [
       },
     ],
   },
+  {
+    id: "bwsquat",
+    pattern: "Bodyweight squat",
+    sets: 3,
+    unit: "reps",
+    range: DEFAULT_RANGE,
+    perSide: false,
+    ladder: [
+      {
+        name: "Bodyweight squat",
+        cues: ["Feet shoulder-width", "Hips back", "Chest tall"],
+        searchTerm: "bodyweight squat",
+      },
+      {
+        name: "Tempo squat",
+        cues: ["3 seconds down", "No bounce at the bottom"],
+        searchTerm: "tempo squat",
+      },
+      {
+        name: "Paused squat",
+        cues: ["2-second pause at the bottom", "Stay tight"],
+        searchTerm: "pause squat",
+      },
+    ],
+  },
+  {
+    id: "pushup",
+    pattern: "Push-up",
+    sets: 3,
+    unit: "reps",
+    range: DEFAULT_RANGE,
+    perSide: false,
+    ladder: [
+      {
+        name: "Push-up",
+        cues: ["Rigid body", "Elbows ~45° from torso", "Full range"],
+        searchTerm: "push up",
+      },
+      {
+        name: "Diamond push-up",
+        cues: ["Hands together under the chest"],
+        searchTerm: "diamond push up",
+      },
+      {
+        name: "Archer push-up",
+        cues: ["Shift weight onto one arm", "Other arm straight"],
+        searchTerm: "archer push up",
+      },
+    ],
+  },
+  {
+    id: "walkinglunge",
+    pattern: "Walking lunge",
+    sets: 3,
+    unit: "reps",
+    range: DEFAULT_RANGE,
+    perSide: true,
+    ladder: [
+      {
+        name: "Walking lunge",
+        cues: ["Step forward into a lunge", "Push up and bring the back leg through", "Torso tall"],
+        searchTerm: "bodyweight walking lunge",
+      },
+      {
+        name: "Bulgarian split squat",
+        cues: ["Rear foot on a chair", "Weight on the front leg"],
+        searchTerm: "bulgarian split squat",
+      },
+    ],
+  },
 ];
 
 export const SLOTS_BY_ID: Record<string, Slot> = Object.fromEntries(
@@ -350,12 +420,12 @@ export const SESSIONS: SessionDef[] = [
   {
     id: "A",
     name: "Session A",
-    slotIds: ["squat", "hpush", "hpull", "hinge", "coreA"],
+    slotIds: ["bwsquat", "pushup", "squat", "hpush", "hpull", "hinge", "coreA"],
   },
   {
     id: "B",
     name: "Session B",
-    slotIds: ["singleleg", "vpush", "hpull", "hamstring", "coreB"],
+    slotIds: ["walkinglunge", "singleleg", "vpush", "hpull", "hamstring", "coreB"],
   },
   {
     id: "RECOVERY",
