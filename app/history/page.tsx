@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useAppState } from "@/components/AppStateProvider";
-import { SESSIONS_BY_ID, SLOTS, SLOTS_BY_ID } from "@/data/program";
+import { SESSIONS_BY_ID } from "@/data/program";
+import { resolveAllSlots, resolveSlot } from "@/lib/program";
 import { formatDate, rungName, rungProgress } from "@/lib/format";
 
 export default function HistoryPage() {
@@ -25,8 +26,9 @@ export default function HistoryPage() {
           Current rungs
         </h2>
         <ul className="flex flex-col gap-1">
-          {SLOTS.map((slot) => {
+          {resolveAllSlots(state).map((slot) => {
             const st = state.slotStates[slot.id];
+            if (!st) return null;
             return (
               <li
                 key={slot.id}
@@ -75,7 +77,7 @@ export default function HistoryPage() {
                 </div>
                 <ul className="mt-2 flex flex-col gap-1.5">
                   {log.slots.map((ls) => {
-                    const slot = SLOTS_BY_ID[ls.slotId];
+                    const slot = resolveSlot(state, ls.slotId);
                     return (
                       <li
                         key={ls.slotId}

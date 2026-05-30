@@ -1,7 +1,7 @@
 "use client";
 
 import type { Suggestion } from "@/lib/engine";
-import { SLOTS_BY_ID } from "@/data/program";
+import type { Slot } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 
 export type Decision = "accepted" | "declined";
@@ -14,11 +14,13 @@ export type Decision = "accepted" | "declined";
 export function SessionReview({
   suggestions,
   decisions,
+  slotsById,
   onDecide,
   onFinish,
 }: {
   suggestions: Suggestion[];
   decisions: Record<string, Decision>;
+  slotsById: Record<string, Slot>;
   onDecide: (slotId: string, decision: Decision) => void;
   onFinish: () => void;
 }) {
@@ -44,7 +46,7 @@ export function SessionReview({
       </header>
 
       {actionable.map((s) => {
-        const slot = SLOTS_BY_ID[s.slotId];
+        const slot = slotsById[s.slotId];
         const decision = decisions[s.slotId];
         const isAdvance = s.type === "advance";
         return (
@@ -91,7 +93,7 @@ export function SessionReview({
       })}
 
       {topNotes.map((s) => {
-        const slot = SLOTS_BY_ID[s.slotId];
+        const slot = slotsById[s.slotId];
         return (
           <div
             key={s.slotId}

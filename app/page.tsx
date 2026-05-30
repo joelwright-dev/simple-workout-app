@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useAppState } from "@/components/AppStateProvider";
 import { ButtonLink } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
-import { SESSIONS_BY_ID, SLOTS_BY_ID } from "@/data/program";
+import { SESSIONS_BY_ID } from "@/data/program";
+import { resolveSessionSlotIds, resolveSlot } from "@/lib/program";
 import { currentRotationSessionId } from "@/lib/engine";
 import { rangeLabel, rungName, rungProgress } from "@/lib/format";
 
@@ -16,6 +17,7 @@ export default function HomePage() {
   const dueId = currentRotationSessionId(state.rotationIndex);
   const due = SESSIONS_BY_ID[dueId];
   const nextId = dueId === "A" ? "B" : "A";
+  const dueSlotIds = resolveSessionSlotIds(state, dueId);
 
   return (
     <main className="flex flex-1 flex-col gap-5 px-4 py-6">
@@ -51,13 +53,14 @@ export default function HomePage() {
           {due.name}
         </h1>
         <p className="mt-1 text-sm text-ink-muted">
-          {due.slotIds.length} movements · 3 sets each
+          {dueSlotIds.length} movements · 3 sets each
         </p>
 
         <ul className="mt-5 flex flex-col gap-1">
-          {due.slotIds.map((slotId) => {
-            const slot = SLOTS_BY_ID[slotId];
+          {dueSlotIds.map((slotId) => {
+            const slot = resolveSlot(state, slotId);
             const st = state.slotStates[slotId];
+            if (!slot || !st) return null;
             return (
               <li
                 key={slotId}
@@ -84,9 +87,14 @@ export default function HomePage() {
         </ButtonLink>
       </Card>
 
-      <ButtonLink href="/session/RECOVERY" variant="soft" className="w-full">
-        Recovery / mobility
-      </ButtonLink>
+      <div className="grid grid-cols-2 gap-3">
+        <ButtonLink href="/session/RECOVERY" variant="soft">
+          Recovery
+        </ButtonLink>
+        <ButtonLink href="/edit" variant="soft">
+          Edit sessions
+        </ButtonLink>
+      </div>
 
       <p className="mt-auto px-4 text-center text-xs leading-relaxed text-ink-faint">
         A and B alternate automatically — aim for each ~2× a week with a rest day

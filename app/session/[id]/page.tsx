@@ -7,7 +7,12 @@ import { useAppState } from "@/components/AppStateProvider";
 import { SlotCard } from "@/components/SlotCard";
 import { SessionReview, type Decision } from "@/components/SessionReview";
 import { ButtonLink } from "@/components/ui/Button";
-import { RECOVERY_ITEMS, SESSIONS_BY_ID, SLOTS_BY_ID } from "@/data/program";
+import { RECOVERY_ITEMS, SESSIONS_BY_ID } from "@/data/program";
+import {
+  resolveSessionSlotIds,
+  resolveSlot,
+  resolveSlotsById,
+} from "@/lib/program";
 import {
   applyAdvance,
   applyRegress,
@@ -87,13 +92,16 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
   const [recorded, setRecorded] = useState<AppState | null>(null);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
+  const slotIds = resolveSessionSlotIds(state, sessionId);
+
   // Seed steppers: default to last time's numbers, or the bottom of the range.
   const initialLogged = useMemo(() => {
     if (!ready) return null;
     const out: Record<string, number[]> = {};
-    for (const slotId of session.slotIds) {
-      const slot = SLOTS_BY_ID[slotId];
-      const last = state.slotStates[slotId].lastSets;
+    for (const slotId of slotIds) {
+      const slot = resolveSlot(state, slotId);
+      if (!slot) continue;
+      const last = state.slotStates[slotId]?.lastSets;
       out[slotId] = Array.from({ length: slot.sets }, (_, i) =>
         last && typeof last[i] === "number" ? last[i] : slot.range[0],
       );
@@ -122,9 +130,9 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
   };
 
   const handleFinish = () => {
-    const loggedSlots: LoggedSlot[] = session.slotIds.map((slotId) => ({
+    const loggedSlots: LoggedSlot[] = slotIds.map((slotId) => ({
       slotId,
-      rungIndex: state.slotStates[slotId].rungIndex,
+      rungIndex: state.slotStates[slotId]?.rungIndex ?? 0,
       sets: values[slotId],
     }));
 
@@ -135,13 +143,17 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
       new Date().toISOString(),
     );
 
-    const suggs: Suggestion[] = session.slotIds.map((slotId) =>
-      evaluateSlot(
-        SLOTS_BY_ID[slotId],
-        nextState.slotStates[slotId],
-        slotLoggedHistory(nextState.logs, slotId),
-      ),
-    );
+    const suggs: Suggestion[] = slotIds
+      .map((slotId) => {
+        const slot = resolveSlot(state, slotId);
+        if (!slot) return null;
+        return evaluateSlot(
+          slot,
+          nextState.slotStates[slotId],
+          slotLoggedHistory(nextState.logs, slotId),
+        );
+      })
+      .filter((s): s is Suggestion => s !== undefined);
 
     setRecorded(nextState);
     setSuggestions(suggs);
@@ -154,7 +166,8 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
     const slotStates = { ...recorded.slotStates };
     for (const s of suggestions) {
       if (!s || decisions[s.slotId] !== "accepted") continue;
-      const slot = SLOTS_BY_ID[s.slotId];
+      const slot = resolveSlot(recorded, s.slotId);
+      if (!slot) continue;
       if (s.type === "advance") {
         slotStates[s.slotId] = applyAdvance(slot, slotStates[s.slotId]);
       } else if (s.type === "regress") {
@@ -170,6 +183,7 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
       <SessionReview
         suggestions={suggestions}
         decisions={decisions}
+        slotsById={resolveSlotsById(recorded ?? state)}
         onDecide={(slotId, decision) =>
           setDecisions((prev) => ({ ...prev, [slotId]: decision }))
         }
@@ -184,7 +198,7 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
         <div>
           <h1 className="text-2xl font-extrabold text-ink">{session.name}</h1>
           <p className="text-sm text-ink-muted">
-            {session.slotIds.length} movements · 3 sets each
+            {slotIds.length} movements · 3 sets each
           </p>
         </div>
         <Link
@@ -196,9 +210,10 @@ function StrengthSession({ sessionId }: { sessionId: "A" | "B" }) {
       </header>
 
       <div className="flex flex-col gap-4">
-        {session.slotIds.map((slotId) => {
-          const slot = SLOTS_BY_ID[slotId];
+        {slotIds.map((slotId) => {
+          const slot = resolveSlot(state, slotId);
           const st = state.slotStates[slotId];
+          if (!slot || !st) return null;
           return (
             <SlotCard
               key={slotId}

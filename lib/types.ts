@@ -48,6 +48,13 @@ export interface AppState {
   rotationIndex: number; // position in the A/B rotation
   slotStates: Record<string, SlotState>; // keyed by slot id
   logs: SessionLog[];
+
+  // ---- Per-user customization (optional; defaults used when absent) ----
+  // Exercises the user created. Merged over the built-in program by id.
+  customSlots?: Record<string, Slot>;
+  // Per-session ordered slot id lists that OVERRIDE the built-in session
+  // (keyed by "A" / "B"). Absent => use the default session contents.
+  sessionSlots?: Record<string, string[]>;
 }
 
 // ---- Media resolution shapes (data/media.json) ----

@@ -69,6 +69,11 @@ export const SLOTS: Slot[] = [
         searchTerm: "bodyweight reverse lunge",
       },
       {
+        name: "Walking lunge",
+        cues: ["Step forward into a lunge", "Push up and bring the back leg through", "Torso tall"],
+        searchTerm: "bodyweight walking lunge",
+      },
+      {
         name: "Split squat",
         cues: ["Static stance", "Controlled depth"],
         searchTerm: "split squat",
